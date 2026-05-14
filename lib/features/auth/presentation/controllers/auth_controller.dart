@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/network/auth_token_store.dart';
 import '../../domain/entities/auth_session_entity.dart';
 import '../providers/auth_providers.dart';
 
@@ -44,6 +45,10 @@ class AuthController extends Notifier<AuthState> {
       final session = await ref
           .read(authRepositoryProvider)
           .login(username: username, password: password);
+      AuthTokenStore.instance.save(
+        accessToken: session.accessToken,
+        refreshToken: session.refreshToken,
+      );
       state = AuthState(status: AuthStatus.authenticated, session: session);
     } catch (error) {
       state = AuthState(
@@ -54,6 +59,7 @@ class AuthController extends Notifier<AuthState> {
   }
 
   void logout() {
+    AuthTokenStore.instance.clear();
     state = const AuthState.unauthenticated();
   }
 }

@@ -92,24 +92,81 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   const SizedBox(height: 28),
                   Container(
-                    padding: const EdgeInsets.all(18),
+                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.14),
-                      borderRadius: BorderRadius.circular(28),
+                      color: Colors.white.withValues(alpha: 0.22),
+                      borderRadius: BorderRadius.circular(30),
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.12),
+                        color: Colors.white.withValues(alpha: 0.22),
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.16),
+                          blurRadius: 34,
+                          offset: const Offset(0, 18),
+                        ),
+                        BoxShadow(
+                          color: Colors.white.withValues(alpha: 0.08),
+                          blurRadius: 18,
+                          offset: const Offset(-2, -2),
+                        ),
+                      ],
                     ),
                     child: Form(
                       key: _formKey,
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          TextFormField(
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                child: const Icon(
+                                  Icons.lock_outline_rounded,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Secure access',
+                                      style: theme.textTheme.titleMedium
+                                          ?.copyWith(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      'Sign in to continue shopping',
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.82,
+                                            ),
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 18),
+                          _LabeledTextField(
+                            label: 'Username',
                             controller: _usernameController,
-                            decoration: const InputDecoration(
-                              labelText: 'Username',
-                              hintText: 'emilys',
-                            ),
+                            hintText: 'emilys',
+                            icon: Icons.alternate_email_rounded,
+                            theme: theme,
+                            colorScheme: colorScheme,
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
                                 return 'Enter a username';
@@ -118,13 +175,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             },
                           ),
                           const SizedBox(height: 14),
-                          TextFormField(
+                          _LabeledTextField(
+                            label: 'Password',
                             controller: _passwordController,
+                            hintText: 'emilyspass',
+                            icon: Icons.lock_outline_rounded,
+                            theme: theme,
+                            colorScheme: colorScheme,
                             obscureText: true,
-                            decoration: const InputDecoration(
-                              labelText: 'Password',
-                              hintText: 'emilyspass',
-                            ),
+                            obscuringCharacter: '•',
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Enter a password';
@@ -143,18 +202,47 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                           ],
                           const SizedBox(height: 20),
-                          SizedBox(
-                            width: double.infinity,
-                            child: FilledButton(
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: isLoading
+                                    ? [
+                                        Colors.white.withValues(alpha: 0.76),
+                                        Colors.white.withValues(alpha: 0.62),
+                                      ]
+                                    : [
+                                        Colors.white,
+                                        Colors.white.withValues(alpha: 0.94),
+                                      ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.18),
+                                  blurRadius: 22,
+                                  offset: const Offset(0, 10),
+                                ),
+                              ],
+                            ),
+                            child: FilledButton.icon(
                               onPressed: isLoading ? null : _submit,
                               style: FilledButton.styleFrom(
-                                backgroundColor: Colors.white,
+                                backgroundColor: Colors.transparent,
                                 foregroundColor: Colors.black,
+                                disabledBackgroundColor: Colors.transparent,
+                                disabledForegroundColor: Colors.black54,
+                                shadowColor: Colors.transparent,
+                                elevation: 0,
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 16,
                                 ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                               ),
-                              child: isLoading
+                              icon: isLoading
                                   ? const SizedBox(
                                       width: 18,
                                       height: 18,
@@ -162,7 +250,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                         strokeWidth: 2,
                                       ),
                                     )
-                                  : const Text('Sign in'),
+                                  : const Icon(
+                                      Icons.arrow_forward_rounded,
+                                      size: 18,
+                                    ),
+                              label: Text(
+                                isLoading ? 'Signing in...' : 'Sign in',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.black,
+                                ),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -178,9 +276,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     },
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: Colors.white,
-                                side: const BorderSide(color: Colors.white70),
+                                side: BorderSide(
+                                  color: Colors.white.withValues(alpha: 0.85),
+                                ),
+                                backgroundColor: Colors.white.withValues(
+                                  alpha: 0.08,
+                                ),
                                 padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
+                                  vertical: 15,
                                 ),
                               ),
                               child: const Text('Use demo account'),
@@ -225,5 +328,97 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           username: _usernameController.text.trim(),
           password: _passwordController.text,
         );
+  }
+}
+
+class _LabeledTextField extends StatelessWidget {
+  const _LabeledTextField({
+    required this.label,
+    required this.controller,
+    required this.hintText,
+    required this.icon,
+    required this.theme,
+    required this.colorScheme,
+    required this.validator,
+    this.obscureText = false,
+    this.obscuringCharacter = '•',
+  });
+
+  final String label;
+  final TextEditingController controller;
+  final String hintText;
+  final IconData icon;
+  final ThemeData theme;
+  final ColorScheme colorScheme;
+  final String? Function(String?) validator;
+  final bool obscureText;
+  final String obscuringCharacter;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: Colors.white.withValues(alpha: 0.9),
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.2,
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          obscureText: obscureText,
+          obscuringCharacter: obscuringCharacter,
+          decoration: InputDecoration(
+            hintText: hintText,
+            prefixIcon: Icon(icon, color: colorScheme.onSurfaceVariant),
+            filled: true,
+            fillColor: Colors.white.withValues(alpha: 0.92),
+            hintStyle: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+              fontWeight: FontWeight.w600,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 18,
+            ),
+            isDense: true,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(18),
+              borderSide: BorderSide(
+                color: colorScheme.outlineVariant.withValues(alpha: 0.45),
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(18),
+              borderSide: BorderSide(
+                color: colorScheme.outlineVariant.withValues(alpha: 0.45),
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(18),
+              borderSide: BorderSide(color: colorScheme.primary, width: 1.6),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(18),
+              borderSide: BorderSide(color: colorScheme.error),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(18),
+              borderSide: BorderSide(color: colorScheme.error, width: 1.6),
+            ),
+          ),
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
+          ),
+          cursorColor: colorScheme.primary,
+          validator: validator,
+        ),
+      ],
+    );
   }
 }

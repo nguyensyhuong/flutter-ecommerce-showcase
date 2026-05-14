@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../../../../core/config/app_config.dart';
 import '../../../../core/network/dio_client.dart';
 import '../models/auth_session_model.dart';
 import '../models/auth_user_model.dart';
@@ -18,7 +19,7 @@ class AuthRemoteDataSource {
       data: <String, dynamic>{
         'username': username,
         'password': password,
-        'expiresInMins': 60,
+        'expiresInMins': AppConfig.authSessionExpiresInMins,
       },
     );
 
