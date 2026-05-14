@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/api_constants.dart';
+import '../../../../core/pagination/paginated_response.dart';
 import '../../domain/entities/product_entity.dart';
 import '../providers/product_providers.dart';
 
@@ -44,11 +45,12 @@ final productFeedControllerProvider =
 class ProductFeedController extends AsyncNotifier<ProductFeedState> {
   @override
   Future<ProductFeedState> build() async {
-    final products = await _fetchPage(skip: 0);
+    final page = await _fetchPage(skip: 0);
+    final products = page.items;
     return ProductFeedState(
       products: products,
-      nextSkip: products.length,
-      hasReachedEnd: products.length < ApiConstants.defaultProductsLimit,
+      nextSkip: page.skip + page.items.length,
+      hasReachedEnd: !page.hasMore,
       isLoadingMore: false,
     );
   }
@@ -64,7 +66,8 @@ class ProductFeedController extends AsyncNotifier<ProductFeedState> {
     state = AsyncData(currentState.copyWith(isLoadingMore: true));
 
     try {
-      final products = await _fetchPage(skip: currentState.nextSkip);
+      final page = await _fetchPage(skip: currentState.nextSkip);
+      final products = page.items;
       final mergedProducts = <ProductEntity>[
         ...currentState.products,
         ...products,
@@ -73,8 +76,8 @@ class ProductFeedController extends AsyncNotifier<ProductFeedState> {
       state = AsyncData(
         currentState.copyWith(
           products: mergedProducts,
-          nextSkip: currentState.nextSkip + products.length,
-          hasReachedEnd: products.length < ApiConstants.defaultProductsLimit,
+          nextSkip: page.skip + page.items.length,
+          hasReachedEnd: !page.hasMore,
           isLoadingMore: false,
           errorMessage: null,
         ),
@@ -94,7 +97,7 @@ class ProductFeedController extends AsyncNotifier<ProductFeedState> {
     state = await AsyncValue.guard(build);
   }
 
-  Future<List<ProductEntity>> _fetchPage({required int skip}) {
+  Future<PaginatedResponse<ProductEntity>> _fetchPage({required int skip}) {
     return ref
         .read(getProductsUseCaseProvider)
         .call(limit: ApiConstants.defaultProductsLimit, skip: skip);

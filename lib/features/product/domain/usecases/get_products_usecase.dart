@@ -1,3 +1,4 @@
+import '../../../../core/pagination/paginated_response.dart';
 import '../entities/product_entity.dart';
 import '../repositories/product_repository.dart';
 
@@ -6,7 +7,7 @@ class GetProductsUseCase {
 
   final ProductRepository _repository;
 
-  Future<List<ProductEntity>> call({
+  Future<PaginatedResponse<ProductEntity>> call({
     int limit = 10,
     int skip = 0,
   }) {

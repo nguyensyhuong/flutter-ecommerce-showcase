@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../providers/product_providers.dart';
+import '../widgets/product_detail_shimmer.dart';
 
 class ProductDetailScreen extends ConsumerWidget {
   const ProductDetailScreen({super.key, required this.productId});
@@ -31,7 +32,7 @@ class ProductDetailScreen extends ConsumerWidget {
         ],
       ),
       body: productAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const ProductDetailShimmer(),
         error: (error, stackTrace) => Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
