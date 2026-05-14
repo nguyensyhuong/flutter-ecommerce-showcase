@@ -2,6 +2,10 @@
 
 A production-minded Flutter ecommerce demo built on top of DummyJSON.
 
+## Demo
+
+![App demo](assets/demo.gif)
+
 ## What this repo demonstrates
 
 - Feature-first architecture with explicit `core`, `shared`, and `features` boundaries
