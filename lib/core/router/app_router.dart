@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/product/presentation/screens/product_detail_screen.dart';
+import '../../features/product/presentation/screens/product_list_screen.dart';
+
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/login',
+  initialLocation: '/home',
   routes: <RouteBase>[
     GoRoute(
       path: '/login',
@@ -11,14 +14,12 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/home',
-      builder: (context, state) =>
-          const _SimpleScreen(title: 'Home', subtitle: '/home'),
+      builder: (context, state) => const ProductListScreen(),
     ),
     GoRoute(
       path: '/product/:id',
-      builder: (context, state) => _SimpleScreen(
-        title: 'Product detail',
-        subtitle: '/product/${state.pathParameters['id']}',
+      builder: (context, state) => ProductDetailScreen(
+        productId: int.tryParse(state.pathParameters['id'] ?? '') ?? 0,
       ),
     ),
     GoRoute(
