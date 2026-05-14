@@ -118,7 +118,7 @@ class ProductListScreen extends ConsumerWidget {
                       final product = products[index];
                       return ProductCard(
                         product: product,
-                        onTap: () => context.go('/product/${product.id}'),
+                        onTap: () => context.push('/product/${product.id}'),
                       );
                     }, childCount: products.length),
                   ),

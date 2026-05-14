@@ -8,10 +8,12 @@ class ProductRepositoryImpl implements ProductRepository {
   final ProductRemoteDataSource _remoteDataSource;
 
   @override
-  Future<List<ProductEntity>> getProducts({
-    int limit = 10,
-    int skip = 0,
-  }) {
+  Future<List<ProductEntity>> getProducts({int limit = 10, int skip = 0}) {
     return _remoteDataSource.getProducts(limit: limit, skip: skip);
+  }
+
+  @override
+  Future<ProductEntity> getProductById(int id) {
+    return _remoteDataSource.getProductById(id);
   }
 }

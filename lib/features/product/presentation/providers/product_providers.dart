@@ -28,3 +28,10 @@ final productsProvider = FutureProvider<List<ProductEntity>>((ref) {
         skip: ApiConstants.defaultProductsSkip,
       );
 });
+
+final productDetailProvider = FutureProvider.family<ProductEntity, int>((
+  ref,
+  productId,
+) {
+  return ref.watch(productRepositoryProvider).getProductById(productId);
+});

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/network/dio_client.dart';
+import '../../domain/entities/product_entity.dart';
 import '../models/product_model.dart';
 
 class ProductRemoteDataSource {
@@ -19,5 +20,13 @@ class ProductRemoteDataSource {
         .cast<Map<String, dynamic>>();
 
     return products.map(ProductModel.fromJson).toList(growable: false);
+  }
+
+  Future<ProductEntity> getProductById(int id) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '${ApiConstants.productsPath}/$id',
+    );
+
+    return ProductModel.fromJson(response.data ?? <String, dynamic>{});
   }
 }
